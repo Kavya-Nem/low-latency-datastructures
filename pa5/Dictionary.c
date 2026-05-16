@@ -368,7 +368,7 @@ void printDiagnostic(FILE* out, Dictionary D) {
 		if (e.key == DataEmpty){
 			fprintf(out, "(null) : 0 : 0\n");
 		} else if (e.key == DataDeleted) {
-			fprintf(out, "\xc3\xbf : %d : %"PRIu64"\n", e.val, e.code);
+			fprintf(out, "%c : %d : %"PRIu64"\n", e.key[0], e.val, e.code);
 		} else {
 			fprintf(out, "%s : %d : %"PRIu64"\n", e.key, e.val, e.code);
 		}
