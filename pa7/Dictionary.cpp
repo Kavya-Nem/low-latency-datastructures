@@ -1,7 +1,10 @@
-//-----------------------------------------------------------------------------
-// Dictionary.cpp
-// Implementation file for Dictionary ADT based on a Binary Search Tree.
-//-----------------------------------------------------------------------------
+/***
+* Kavya Nemavat
+* knemavat
+* 2026 Spring CSE101 PA5
+* Dictionary.cpp
+* Implementation of Dictionary ADT, based on BST, which can create, free, clear, set values, remove keys, copy, check equality, and print standard or diagnostic output of a dictionary type.
+***/
 #include "Dictionary.h"
 #include <stdexcept>
 

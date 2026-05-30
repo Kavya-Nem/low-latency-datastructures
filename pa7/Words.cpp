@@ -1,8 +1,10 @@
-//-----------------------------------------------------------------------------
-// Words.cpp
-// Top-level client for Dictionary ADT. Parses an input file into words,
-// discarding duplicates, and records their insertion order. 
-//-----------------------------------------------------------------------------
+/***
+* Kavya Nemavat
+* knemavat
+* 2026 Spring CSE101 PA5
+* Words.cpp
+* Top-level client for Dictionary ADT based on BST. Parses an input file into words, discarding duplicates, and records their insertion order. 
+***/
 #include <iostream>
 #include <fstream>
 #include <string>
