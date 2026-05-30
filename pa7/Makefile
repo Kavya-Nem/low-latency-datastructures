@@ -2,10 +2,10 @@
 # Makefile for CSE 101 Programming Assignment 7
 #
 # make                         makes Words
-# make DictionaryClient        makes DictionaryClient
+# make DictionaryTest          makes DictionaryTest
 # make clean                   removes all binaries
 # make checkWords              runs Words in3 myout3 under valgrind
-# make checkDictionaryClient   runs DictionaryClient under valgrind
+# make checkDictionaryTest     runs DictionaryTest under valgrind
 #
 #------------------------------------------------------------------------------
 
@@ -13,7 +13,7 @@
 MAIN           = Words
 MAINOBJ        = $(MAIN).o
 MAINSRC        = $(MAIN).cpp
-TEST           = DictionaryClient
+TEST           = DictionaryTest
 TESTOBJ        = $(TEST).o
 TESTSRC        = $(TEST).cpp
 ADT            = Dictionary
@@ -51,5 +51,3 @@ check$(MAIN) : $(MAIN)
 
 check$(TEST) : $(TEST)
 	$(MEMCHECK) ./$(TEST)
-
-
