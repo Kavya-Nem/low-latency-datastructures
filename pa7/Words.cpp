@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 	ofstream out;
 	string line;
 	string token;
-	string delim = " \t\\\"\',<.>/?;:[{]}|`~!@#$^&*()-_=+0123456789";
+	string delim = " \t\n\r\\\"\',<.>/?;:[{]}|`~!@#$%^&*()-_=+0123456789";
 	if (argc != 3) {
 		cerr << "Usage: " << argv[0] << " <input file> <output file>" << endl;
 		return(EXIT_FAILURE);
