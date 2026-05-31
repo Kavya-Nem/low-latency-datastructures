@@ -3,7 +3,7 @@
 * knemavat
 * 2026 Spring CSE101 PA7
 * Dictionary.cpp
-* Implementation of Dictionary ADT using a doubly linked list with cursor.
+* Implementation of Dictionary ADT using a binary search tree with cursor.
 ***/
 
 #include <new>
