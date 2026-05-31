@@ -1,317 +1,358 @@
 /***
 * Kavya Nemavat
 * knemavat
-* 2026 Spring CSE101 PA5
+* 2026 Spring CSE101 PA7
 * Dictionary.cpp
-* Implementation of Dictionary ADT, based on BST, which can create, free, clear, set values, remove keys, copy, check equality, and print standard or diagnostic output of a dictionary type.
+* Implementation of Dictionary ADT using a doubly linked list with cursor.
 ***/
-#include "Dictionary.h"
+
+#include <new>
 #include <stdexcept>
+#include <sstream>
+#include "Dictionary.h"
 
-// Node Constructor
+using namespace std;
+
 Dictionary::Node::Node(keyType k, valType v) {
-    key = k;
-    val = v;
-    parent = nullptr;
-    left = nullptr;
-    right = nullptr;
+	this->key = k;
+	this->val = v;
+	this->parent = nullptr;
+	this->left = nullptr;
+	this->right = nullptr;
 }
 
-// Dictionary Constructor
-Dictionary::Dictionary() {
-    nil = new Node("\0", 0);
-    root = nil;
-    current = nil;
-    num_pairs = 0;
+Dictionary::Dictionary(){
+	this->nil = new Node("nil", 0);
+	this->root = this->nil;
+	this->current = this->root;
+	this->num_pairs = 0;
 }
 
-// Copy Constructor
-Dictionary::Dictionary(const Dictionary& D) {
-    nil = new Node("\0", 0);
-    root = nil;
-    current = nil;
-    num_pairs = 0;
-    preOrderCopy(D.root, D.nil);
+Dictionary::Dictionary(const Dictionary& D){
+	this->nil = new Node("nil", 0);
+	this->num_pairs = 0;
+	this->root = this->nil;
+	this->preOrderCopy(D.root, D.nil);
+	this->current = this->root;
 }
 
-// Destructor
-Dictionary::~Dictionary() {
-    postOrderDelete(root);
-    delete nil;
+Dictionary::~Dictionary(){
+	this->clear();
+	delete(this->nil);
 }
 
-// Helper Functions -----------------------------------------------------------
-
-void Dictionary::inOrderString(std::string& s, Node* R) const {
-    if (R != nil) {
-        inOrderString(s, R->left);
-        s += R->key + " : " + std::to_string(R->val) + "\n";
-        inOrderString(s, R->right);
-    }
+void Dictionary::inOrderString(string& s, Node* R) const{
+	if (R->left == nullptr || R->right == nullptr) {
+		return;
+	} else if (R->left != this->nil) {
+		this->inOrderString(s, R->left);
+	}
+	s += R->key + " : " + ::to_string(R->val) + "\n";
+	if (R->right != this->nil) {
+		this->inOrderString(s, R->right);
+	}
 }
 
-void Dictionary::preOrderString(std::string& s, Node* R) const {
-    if (R != nil) {
-        s += R->key + "\n";
-        preOrderString(s, R->left);
-        preOrderString(s, R->right);
-    }
+void Dictionary::preOrderString(string& s, Node* R) const{
+	if (R->left == nullptr || R->right == nullptr) {
+		return;
+	}
+	s += R->key + "\n";
+	if (R->left != this->nil) {
+		this->preOrderString(s, R->left);
+	}
+	if (R->right != this->nil) {
+		this->preOrderString(s, R->right);
+	}
 }
 
 void Dictionary::preOrderCopy(Node* R, Node* N) {
-    if (R != N) {
-        setValue(R->key, R->val);
-        preOrderCopy(R->left, N);
-        preOrderCopy(R->right, N);
-    }
+	if (R == N) {
+		return;
+	}
+	this->setValue(R->key, R->val);
+	if (R->left->key != "nil") {
+		this->preOrderCopy(R->left, N);
+	}
+	if (R->right->key != "nil") {
+		this->preOrderCopy(R->right, N);
+	}
 }
 
-void Dictionary::postOrderDelete(Node* R) {
-    if (R != nil) {
-        postOrderDelete(R->left);
-        postOrderDelete(R->right);
-        delete R;
-    }
+void Dictionary::postOrderDelete(Node* R){
+	if (R == this->nil) {
+		return;
+	}
+	if (R->left != this->nil) {
+		this->postOrderDelete(R->left);
+	}
+	if (R->right != this->nil) {
+		this->postOrderDelete(R->right);
+	}
+	if (this->current == R) {
+		this->current = this->nil;
+	}
+	delete(R);
+	this->num_pairs--;
 }
 
-Dictionary::Node* Dictionary::search(Node* R, keyType k) const {
-    if (R == nil || k == R->key) {
-        return R;
-    } else if (k < R->key) {
-        return search(R->left, k);
-    } else {
-        return search(R->right, k);
-    }
+Dictionary::Node* Dictionary::search(Node* R, keyType k) const{
+	if (R == this->nil || R->key == k) {
+		return(R);
+	} else if (k > R->key) {
+		return(this->search(R->right, k));
+	} else {
+		return(this->search(R->left, k));
+	}
 }
 
-Dictionary::Node* Dictionary::findMin(Node* R) {
-    if (R != nil) {
-        while (R->left != nil) {
-            R = R->left;
-        }
-    }
-    return R;
+Dictionary::Node* Dictionary::findMin(Node* R){
+	if (R->left == this->nil || R->left == nullptr) {
+		return(R);
+	}
+	return(this->findMin(R->left));
 }
 
-Dictionary::Node* Dictionary::findMax(Node* R) {
-    if (R != nil) {
-        while (R->right != nil) {
-            R = R->right;
-        }
-    }
-    return R;
+Dictionary::Node* Dictionary::findMax(Node* R){
+	if (R->right == this->nil || R->right == nullptr) {
+		return(R);
+	}
+	return(this->findMax(R->right));
 }
 
-Dictionary::Node* Dictionary::findNext(Node* N) {
-    if (N->right != nil) {
-        return findMin(N->right);
-    }
-    Node* y = N->parent;
-    while (y != nil && N == y->right) {
-        N = y;
-        y = y->parent;
-    }
-    return y;
+Dictionary::Node* Dictionary::findNext(Node* N){
+	if (N == this->nil || N == this->findMax(this->root)) {
+		return(this->nil);
+	}
+	if (N->right != this->nil) {
+		return(this->findMin(N->right));
+	} else {
+		while (N->key > (N->parent)->key) {
+			N = N->parent;
+		}
+		return(N->parent);
+	}
 }
 
-Dictionary::Node* Dictionary::findPrev(Node* N) {
-    if (N->left != nil) {
-        return findMax(N->left);
-    }
-    Node* y = N->parent;
-    while (y != nil && N == y->left) {
-        N = y;
-        y = y->parent;
-    }
-    return y;
+Dictionary::Node* Dictionary::findPrev(Node* N){
+	if (N == this->nil || N == this->findMin(this->root)) {
+		return(this->nil);
+	}
+	if (N->left != this->nil) {
+		return(this->findMax(N->left));
+	} else {
+		while (N->key < (N->parent)->key) {
+			N = N->parent;
+		}
+		return(N->parent);
+	}
 }
 
-// Access functions -----------------------------------------------------------
-
-int Dictionary::size() const {
-    return num_pairs;
+int Dictionary::size() const{
+	return(this->num_pairs);
 }
 
 bool Dictionary::contains(keyType k) const {
-    return search(root, k) != nil;
+	if (this->search(this->root, k) == this->nil) {
+		return(false);
+	} else {
+		return(true);
+	}
 }
 
 valType& Dictionary::getValue(keyType k) const {
-    Node* N = search(root, k);
-    if (N == nil) {
-        throw std::logic_error("Dictionary: getValue(): key \"" + k + "\" does not exist");
-    }
-    return N->val;
+	if (!(this->contains(k))) {
+		throw out_of_range("Dictionary: getValue(): key \"blah\" does not exist");
+	}
+	return(const_cast<valType&>((this->search(this->root, k))->val));
 }
 
-bool Dictionary::hasCurrent() const {
-    return current != nil;
+bool Dictionary::hasCurrent() const{
+	if (this->current == this->nil) {
+		return(false);
+	} else {
+		return(true);
+	}
 }
 
-keyType Dictionary::currentKey() const {
-    if (!hasCurrent()) {
-        throw std::logic_error("Dictionary: currentKey(): current undefined");
-    }
-    return current->key;
+keyType Dictionary::currentKey() const{
+	if (!(this->hasCurrent())) {
+		throw out_of_range("Dictionary: currentKey(): current undefined");
+	}
+	return((this->current)->key);
 }
 
-valType& Dictionary::currentVal() const {
-    if (!hasCurrent()) {
-        throw std::logic_error("Dictionary: currentVal(): current undefined");
-    }
-    return current->val;
+valType& Dictionary::currentVal() const{
+	if (!(this->hasCurrent())) {
+		throw out_of_range("Dictionary: currentVal(): current undefined");
+	}
+	return(const_cast<valType&>((this->current)->val));
 }
-
-// Manipulation procedures ----------------------------------------------------
 
 void Dictionary::clear() {
-    postOrderDelete(root);
-    root = nil;
-    current = nil;
-    num_pairs = 0;
+	this->postOrderDelete(this->root);
+	this->root = this->nil;
 }
 
 void Dictionary::setValue(keyType k, valType v) {
-    Node* y = nil;
-    Node* x = root;
-    
-    while (x != nil) {
-        y = x;
-        if (k == x->key) {
-            x->val = v; 
-            return;
-        } else if (k < x->key) {
-            x = x->left;
-        } else {
-            x = x->right;
-        }
-    }
-    
-    Node* z = new Node(k, v);
-    z->left = nil;
-    z->right = nil;
-    z->parent = y;
-    
-    if (y == nil) {
-        root = z;
-    } else if (k < y->key) {
-        y->left = z;
-    } else {
-        y->right = z;
-    }
-    num_pairs++;
+	if (this->contains(k)) {
+		(this->search(this->root, k))->val = v;
+	} else {
+		if (this->root == this->nil) {
+			this->root = new Node(k, v);
+			this->num_pairs++;
+			this->root->parent = this->nil;
+			this->root->left = this->nil;
+			this->root->right = this->nil;
+		} else {
+			Node* N = this->root;
+			while (true) {
+				if (k < N->key && N->left != this->nil) {
+					N = N->left;
+				} else if(k > N->key && N->right != this->nil){
+					N = N->right;
+				} else {
+					break;
+				}
+			}
+			Node* newNode = new Node(k, v);
+			this->num_pairs++;
+			if (k < N->key) {
+				N->left = newNode;
+			} else {
+				N->right = newNode;
+			}
+			newNode->parent = N;
+			newNode->left = this->nil;
+			newNode->right = this->nil;
+		}
+	}
 }
 
-void Dictionary::remove(keyType k) {
-    Node* z = search(root, k);
-    if (z == nil) {
-        throw std::logic_error("Dictionary: remove(): key \"" + k + "\" does not exist");
-    }
-    
-    if (current == z) {
-        current = nil; 
-    }
-    
-    if (z->left == nil) {
-        if (z->parent == nil) root = z->right;
-        else if (z == z->parent->left) z->parent->left = z->right;
-        else z->parent->right = z->right;
-        if (z->right != nil) z->right->parent = z->parent;
-    } else if (z->right == nil) {
-        if (z->parent == nil) root = z->left;
-        else if (z == z->parent->left) z->parent->left = z->left;
-        else z->parent->right = z->left;
-        if (z->left != nil) z->left->parent = z->parent;
-    } else {
-        Node* y = findMin(z->right);
-        if (y->parent != z) {
-            if (y->parent == nil) root = y->right;
-            else if (y == y->parent->left) y->parent->left = y->right;
-            else y->parent->right = y->right;
-            if (y->right != nil) y->right->parent = y->parent;
-            
-            y->right = z->right;
-            y->right->parent = y;
-        }
-        if (z->parent == nil) root = y;
-        else if (z == z->parent->left) z->parent->left = y;
-        else z->parent->right = y;
-        y->parent = z->parent;
-        
-        y->left = z->left;
-        y->left->parent = y;
-    }
-    delete z;
-    num_pairs--;
+void Dictionary::remove(keyType k){
+	if (!(this->contains(k))) {
+		throw out_of_range("Dictionary: remove(): key \"blah\" does not exist");
+	}
+	Node* N = this->search(this->root, k);
+	if (N->left == this->nil && N->right == this->nil) {
+		if ((N->parent)->left == N) {
+			(N->parent)->left = this->nil;
+		}
+		if ((N->parent)->right == N) {
+			(N->parent)->right = this->nil;
+		}
+		if (N == this->root) {
+			this->root = this->nil;
+		}
+	} else if (N->left == this->nil) {
+		if ((N->parent)->left == N) {
+			(N->parent)->left = N->right;
+		}
+		if ((N->parent)->right == N) {
+			(N->parent)->right = N->right;
+		}
+		(N->right)->parent = N->parent;
+		if (N == this->root) {
+			this->root = N->right;
+		}
+	} else if (N->right == this->nil) {
+		if ((N->parent)->left == N) {
+			(N->parent)->left = N->left;
+		}
+		if ((N->parent)->right == N) {
+			(N->parent)->right = N->left;
+		}
+		(N->left)->parent = N->parent;
+		if (N == this->root) {
+			this->root = N->left;
+		}
+	} else {
+		Node* next = this->findNext(N);
+		if ((N->parent)->left == N) {
+			(N->parent)->left = next;
+		}
+		if ((N->parent)->right == N) {
+			(N->parent)->right = next;
+		}
+		if (next->parent != N) {
+			(next->parent)->left = next->right;
+			if (next->right != this->nil) {
+				(next->right)->parent = next->parent;
+			}
+			next->right = N->right;
+			(next->right)->parent = next;
+		}
+		next->parent = N->parent;
+		next->left = N->left;
+		(next->left)->parent = next;
+		if (N == this->root) {
+			this->root = next;
+		}
+	}
+	if (this->current == N) {
+		this->current = this->nil;
+	}
+	delete(N);
+	this->num_pairs--;
 }
 
 void Dictionary::begin() {
-    if (num_pairs > 0) {
-        current = findMin(root);
-    }
+	if (this->num_pairs > 0) {
+		this->current = this->findMin(this->root);
+	}
 }
 
 void Dictionary::end() {
-    if (num_pairs > 0) {
-        current = findMax(root);
-    }
+	if (this->num_pairs > 0) {
+		this->current = this->findMax(this->root);
+	}
 }
 
 void Dictionary::next() {
-    if (!hasCurrent()) {
-        throw std::logic_error("Dictionary: next(): current undefined");
-    }
-    current = findNext(current);
+	if (!(this->hasCurrent())) {
+		throw out_of_range("Dictionary: next(): current undefined");	
+	}
+	this->current = this->findNext(this->current);
 }
 
 void Dictionary::prev() {
-    if (!hasCurrent()) {
-        throw std::logic_error("Dictionary: prev(): current undefined");
-    }
-    current = findPrev(current);
+	if (!(this->hasCurrent())) {
+		throw out_of_range("Dictionary: prev(): current undefined");
+	}
+	this->current = this->findPrev(this->current);
 }
 
-// Other Functions ------------------------------------------------------------
-
-std::string Dictionary::to_string() const {
-    std::string s = "";
-    inOrderString(s, root);
-    return s;
+string Dictionary::to_string() const{
+	string s;
+	this->inOrderString(s, this->root);
+	return(s);
 }
 
-std::string Dictionary::pre_string() const {
-    std::string s = "";
-    preOrderString(s, root);
-    return s;
+string Dictionary::pre_string() const{
+	string s;
+	this->preOrderString(s, this->root);
+	return(s);
 }
 
 bool Dictionary::equals(const Dictionary& D) const {
-    if (num_pairs != D.size()) {
-        return false;
-    }
-    std::string s1 = this->to_string();
-    std::string s2 = D.to_string();
-    return s1 == s2;
+	return(this->to_string() == D.to_string());
 }
 
-// Overloaded Operators -------------------------------------------------------
-
-std::ostream& operator<<(std::ostream& stream, Dictionary& D) {
-    return stream << D.to_string();
+ostream& operator<<( ostream& stream, Dictionary& D){
+	return(stream << D.to_string());
 }
 
-bool operator==(const Dictionary& A, const Dictionary& B) {
-    return A.equals(B);
+bool operator==( const Dictionary& A, const Dictionary& B ) {
+	return(A.equals(B));
 }
 
-Dictionary& Dictionary::operator=(const Dictionary& D) {
-    if (this != &D) {
-        Dictionary temp = D;
-        std::swap(nil, temp.nil);
-        std::swap(root, temp.root);
-        std::swap(current, temp.current);
-        std::swap(num_pairs, temp.num_pairs);
-    }
-    return *this;
+Dictionary& Dictionary::operator=( const Dictionary& D) {
+	if (this != &D) {
+		Dictionary temp = D;
+		swap(this->nil, temp.nil);
+		swap(this->num_pairs, temp.num_pairs);
+		swap(this->root, temp.root);
+		swap(this->current, temp.current);
+	}
+	return(*this);
 }
-

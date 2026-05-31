@@ -2,18 +2,17 @@
 # Makefile for CSE 101 Programming Assignment 7
 #
 # make                         makes Words
-# make DictionaryTest          makes DictionaryTest
+# make DictionaryClient        makes DictionaryClient
 # make clean                   removes all binaries
 # make checkWords              runs Words in3 myout3 under valgrind
-# make checkDictionaryTest     runs DictionaryTest under valgrind
+# make checkDictionaryClient   runs DictionaryClient under valgrind
 #
 #------------------------------------------------------------------------------
-
 
 MAIN           = Words
 MAINOBJ        = $(MAIN).o
 MAINSRC        = $(MAIN).cpp
-TEST           = DictionaryTest
+TEST           = DictionaryClient
 TESTOBJ        = $(TEST).o
 TESTSRC        = $(TEST).cpp
 ADT            = Dictionary
@@ -26,7 +25,6 @@ REMOVE         = rm -f
 MEMCHECK       = valgrind --leak-check=full
 INFILE         = in3
 OUTFILE        = myout3
-
 
 $(MAIN) : $(MAINOBJ) $(ADTOBJ)
 	$(LINK) $(MAIN) $(MAINOBJ) $(ADTOBJ)

@@ -10,7 +10,6 @@
 #ifndef DICTIONARY_H_INCLUDE_
 #define DICTIONARY_H_INCLUDE_
 
-
 // Exported types -------------------------------------------------------------
 typedef std::string keyType;  // must be comparable using <, <=, >, >=, ==, !=
 typedef int         valType;
@@ -217,4 +216,3 @@ public:
 
 
 #endif
-
