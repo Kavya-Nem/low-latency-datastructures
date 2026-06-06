@@ -429,13 +429,29 @@ void Dictionary::clear() {
 }
 
 void Dictionary::setValue(keyType k, valType v) {
-	if (this->contains(k)) {
-		(this->search(this->root, k))->val = v;
-	} else {
-		Node* N = new Node(k, v);
-		this->BST_insert(N);
-		delete(N);
+	Node* y = nil;
+	Node* x = root;
+	while (x != nil) {
+		y = x;
+		if (k == x->key) {
+			x->val = v;
+			return;
+		} else if (k < x->key) {
+			x = x->left;
+		} else {
+			x = x->right;
+		}
 	}
+	Node* z = new Node(k, v);
+	z->parent = y;
+	z->left = nil;
+	z->right = nil;
+	z->color = 0;
+	if (y == nil) root = z;
+	else if (z->key < y->key) y->left = z;
+	else y->right = z;
+	num_pairs++;
+	RB_InsertFixUp(z);
 }
 
 void Dictionary::remove(keyType k){
@@ -475,9 +491,6 @@ void Dictionary::prev() {
 string Dictionary::to_string() const{
 	string s;
 	this->inOrderString(s, this->root);
-	if (!s.empty()) {
-		s.pop_back();
-	}
 	return(s);
 }
 
