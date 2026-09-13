@@ -1,0 +1,39 @@
+name: CI
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch: {}
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    name: ${{ matrix.pa }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        pa: [pa4, pa5, pa7, pa8]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+      - name: Init submodules
+        run: git submodule update --init --remote
+      - name: Install toolchain (valgrind, bc, GNU time)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends valgrind bc time
+      - name: Build & test ${{ matrix.pa }}
+        run: |
+          cd ${{ matrix.pa }}
+          chmod +x  ./../cse-101-public-tests/${{ matrix.pa }}/${{ matrix.pa }}.sh
+          ./../cse-101-public-tests/${{ matrix.pa }}/${{ matrix.pa }}.sh
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.pa }}-logs
+          path: |
+            ${{ matrix.pa }}/*.txt
