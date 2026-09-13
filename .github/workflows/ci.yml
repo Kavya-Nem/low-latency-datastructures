@@ -20,7 +20,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v7
       - name: Init submodules
-        run: git submodule update --init --remote
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.TESTS_REPOSITORY_TOKEN }}@github.com/".insteadOf "https://github.com"
+          git submodule update --init --remote
       - name: Install toolchain (valgrind, bc, GNU time)
         run: |
           sudo apt-get update -qq
