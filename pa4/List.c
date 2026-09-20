@@ -295,11 +295,9 @@ void deleteFront(List L) {
 	}
 	if (length(L) > 1) {
 		L->front = L->front->next;
-		free(L->front->previous->data);
 		free(L->front->previous);
 		L->front->previous = NULL;
 	} else {
-		free(L->front->data);
 		free(L->front);
 		L->front = L->back = NULL;
 	}
@@ -322,7 +320,6 @@ void deleteBack(List L) {
 	}
 	if (length(L) > 1) {
 		L->back = L->back->previous;
-		free(L->back->next->data);
 		free(L->back->next);
 		L->back->next = NULL;
 		L->length--;
@@ -352,7 +349,6 @@ void delete(List L) {
 	} else {
 		L->cursor->previous->next = L->cursor->next;
 		L->cursor->next->previous = L->cursor->previous;
-		free(L->cursor->data);
 		free(L->cursor);
 		L->cursor = NULL;
 		L->position = -1;
