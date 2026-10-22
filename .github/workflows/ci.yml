@@ -10,32 +10,33 @@ concurrency:
   cancel-in-progress: true
 jobs:
   test:
-    name: ${{ matrix.pa }}
+    name: ${{ matrix.data-structure }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        pa: [pa4, pa5, pa7, pa8]
+        data-structure: [binarysearchtree, hashtable, redblacktree, sparse]
     steps:
       - name: Check out code
         uses: actions/checkout@v7
       - name: Init submodules
         run: |
-          git config --global url."https://x-access-token:${{ secrets.TESTS_REPOSITORY_TOKEN }}@github.com/".insteadOf "https://github.com"
           git submodule update --init --remote
+          git add .
+          git commit -m "Update submodule pointer to latest commit"
+          git push
       - name: Install toolchain (valgrind, bc, GNU time)
         run: |
-          sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends valgrind bc time
-      - name: Build & test ${{ matrix.pa }}
+      - name: Build & test ${{ matrix.data-structure }}
         run: |
-          cd ${{ matrix.pa }}
-          chmod +x  ./../cse-101-public-tests/${{ matrix.pa }}/${{ matrix.pa }}.sh
-          ./../cse-101-public-tests/${{ matrix.pa }}/${{ matrix.pa }}.sh
+          cd ${{ matrix.data-structure }}
+          chmod +x  ./../low-latency-data-structures-tests/${{ matrix.data-structure }}/main.sh
+          ./../low-latency-data-structures-tests/${{ matrix.data-structure }}/main.sh
       - name: Upload diagnostics
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ matrix.pa }}-logs
+          name: ${{ matrix.data-structure }}
           path: |
-            ${{ matrix.pa }}/*.txt
+            ${{ matrix.data-structure }}/*.txt
