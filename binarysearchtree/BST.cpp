@@ -88,7 +88,7 @@ void BST::postOrderDelete(Node* R){
 	this->num_pairs--;
 }
 
-Node* BST::search(Node* R, keyType k) const{
+BST::Node* BST::search(Node* R, keyType k) const{
 	if (R == this->nil || R->key == k) {
 		return(R);
 	} else if (k > R->key){
@@ -98,21 +98,21 @@ Node* BST::search(Node* R, keyType k) const{
 	}
 }
 
-Node* BST::findMin(Node* R){
+BST::Node* BST::findMin(Node* R){
 	if (R->left == this->nil || R->left == nullptr) {
 		return(R);
 	}
 	return(this->findMin(R->left));
 }
 
-Node* BST::findMax(Node* R){
+BST::Node* BST::findMax(Node* R){
 	if (R->right == this->nil || R->right == nullptr) {
 		return(R);
 	}
 	return(this->findMax(R->right));
 }
 
-Node* BST::findNext(Node* N){
+BST::Node* BST::findNext(Node* N){
 	if (N == this->nil || N == this->findMax(this->root)) {
 		return(this->nil);
 	}
@@ -126,7 +126,7 @@ Node* BST::findNext(Node* N){
 	}
 }
 
-Node* BST::findPrev(Node* N){
+BST::Node* BST::findPrev(Node* N){
 	if (N == this->nil || N == this->findMin(this->root)) {
 		return(this->nil);
 	}
