@@ -1,19 +1,11 @@
-/***
-* Kavya Nemavat
-* knemavat
-* 2026 Spring CSE101 PA7
-* Dictionary.cpp
-* Implementation of Dictionary ADT using a binary search tree with cursor.
-***/
-
-#include <new>
-#include <stdexcept>
-#include <sstream>
-#include "Dictionary.h"
+# include <new>
+# include <stdexcept>
+# include <sstream>
+# include "binarysearchtree.h"
 
 using namespace std;
 
-Dictionary::Node::Node(keyType k, valType v) {
+BST::Node::Node(keyType k, valType v) {
 	this->key = k;
 	this->val = v;
 	this->parent = nullptr;
@@ -21,65 +13,65 @@ Dictionary::Node::Node(keyType k, valType v) {
 	this->right = nullptr;
 }
 
-Dictionary::Dictionary(){
+BST::BST(){
 	this->nil = new Node("nil", 0);
 	this->root = this->nil;
 	this->current = this->root;
 	this->num_pairs = 0;
 }
 
-Dictionary::Dictionary(const Dictionary& D){
+BST::BST(const BST& A){
 	this->nil = new Node("nil", 0);
 	this->num_pairs = 0;
 	this->root = this->nil;
-	this->preOrderCopy(D.root, D.nil);
+	this->preOrderCopy (A.root, A.nil);
 	this->current = this->root;
 }
 
-Dictionary::~Dictionary(){
+BST::~BST(){
 	this->clear();
 	delete(this->nil);
 }
 
-void Dictionary::inOrderString(string& s, Node* R) const{
+void BST::inOrderString(string& s, Node* R) const{
 	if (R->left == nullptr || R->right == nullptr) {
 		return;
-	} else if (R->left != this->nil) {
-		this->inOrderString(s, R->left);
+	} else if (R->left != this->nil){
+		this->inOrderString (s, R->left);
 	}
-	s += R->key + " : " + ::to_string(R->val) + "\n";
+	s += R->key + " : " + ::to_string(R->val) + "\n" ;
 	if (R->right != this->nil) {
-		this->inOrderString(s, R->right);
+		this->inOrderString (s, R->right);
 	}
 }
 
-void Dictionary::preOrderString(string& s, Node* R) const{
+void BST::preOrderString(string& s, Node* R) const{
 	if (R->left == nullptr || R->right == nullptr) {
 		return;
 	}
 	s += R->key + "\n";
 	if (R->left != this->nil) {
-		this->preOrderString(s, R->left);
+		this->preOrderString (s, R->left);
 	}
 	if (R->right != this->nil) {
-		this->preOrderString(s, R->right);
+		this->preOrderString (s, R->right);
 	}
 }
 
-void Dictionary::preOrderCopy(Node* R, Node* N) {
+void BST::preOrderCopy(Node* R, Node* N) {
 	if (R == N) {
 		return;
 	}
-	this->setValue(R->key, R->val);
+	this->setValue (R->key, R->val);
 	if (R->left->key != "nil") {
-		this->preOrderCopy(R->left, N);
+		this->preOrderCopy (R->left, N);
 	}
 	if (R->right->key != "nil") {
-		this->preOrderCopy(R->right, N);
+		this->preOrderCopy (R->right, N);
 	}
 }
 
-void Dictionary::postOrderDelete(Node* R){
+void BST::postOrderDelete(Node* R){
 	if (R == this->nil) {
 		return;
 	}
@@ -96,31 +88,31 @@ void Dictionary::postOrderDelete(Node* R){
 	this->num_pairs--;
 }
 
-Dictionary::Node* Dictionary::search(Node* R, keyType k) const{
+Node* BST::search(Node* R, keyType k) const{
 	if (R == this->nil || R->key == k) {
 		return(R);
-	} else if (k > R->key) {
-		return(this->search(R->right, k));
+	} else if (k > R->key){
+		return(this->search (R->right, k));
 	} else {
-		return(this->search(R->left, k));
+		return(this->search (R->left, k));
 	}
 }
 
-Dictionary::Node* Dictionary::findMin(Node* R){
+Node* BST::findMin(Node* R){
 	if (R->left == this->nil || R->left == nullptr) {
 		return(R);
 	}
 	return(this->findMin(R->left));
 }
 
-Dictionary::Node* Dictionary::findMax(Node* R){
+Node* BST::findMax(Node* R){
 	if (R->right == this->nil || R->right == nullptr) {
 		return(R);
 	}
 	return(this->findMax(R->right));
 }
 
-Dictionary::Node* Dictionary::findNext(Node* N){
+Node* BST::findNext(Node* N){
 	if (N == this->nil || N == this->findMax(this->root)) {
 		return(this->nil);
 	}
@@ -134,7 +126,7 @@ Dictionary::Node* Dictionary::findNext(Node* N){
 	}
 }
 
-Dictionary::Node* Dictionary::findPrev(Node* N){
+Node* BST::findPrev(Node* N){
 	if (N == this->nil || N == this->findMin(this->root)) {
 		return(this->nil);
 	}
@@ -148,11 +140,11 @@ Dictionary::Node* Dictionary::findPrev(Node* N){
 	}
 }
 
-int Dictionary::size() const{
+int BST::size() const{
 	return(this->num_pairs);
 }
 
-bool Dictionary::contains(keyType k) const {
+bool BST::contains(keyType k) const {
 	if (this->search(this->root, k) == this->nil) {
 		return(false);
 	} else {
@@ -160,14 +152,14 @@ bool Dictionary::contains(keyType k) const {
 	}
 }
 
-valType& Dictionary::getValue(keyType k) const {
+valType& BST::getValue(keyType k) const {
 	if (!(this->contains(k))) {
-		throw out_of_range("Dictionary: getValue(): key \"blah\" does not exist");
+		throw out_of_range("Binary Search Tree: getValue(): key "+ k +" does not exist");
 	}
-	return(const_cast<valType&>((this->search(this->root, k))->val));
+	return(const_cast<valType&>((this->search (this->root, k))->val));
 }
 
-bool Dictionary::hasCurrent() const{
+bool BST::hasCurrent() const{
 	if (this->current == this->nil) {
 		return(false);
 	} else {
@@ -175,28 +167,28 @@ bool Dictionary::hasCurrent() const{
 	}
 }
 
-keyType Dictionary::currentKey() const{
+keyType BST::currentKey() const{
 	if (!(this->hasCurrent())) {
-		throw out_of_range("Dictionary: currentKey(): current undefined");
+		throw out_of_range("Binary Search Tree: currentKey(): current key is undefined");
 	}
 	return((this->current)->key);
 }
 
-valType& Dictionary::currentVal() const{
+valType& BST::currentVal() const{
 	if (!(this->hasCurrent())) {
-		throw out_of_range("Dictionary: currentVal(): current undefined");
+		throw out_of_range("Binary Search Tree: currentVal(): current key is undefined");
 	}
 	return(const_cast<valType&>((this->current)->val));
 }
 
-void Dictionary::clear() {
+void BST::clear() {
 	this->postOrderDelete(this->root);
 	this->root = this->nil;
 }
 
-void Dictionary::setValue(keyType k, valType v) {
+void BST::setValue(keyType k, valType v) {
 	if (this->contains(k)) {
-		(this->search(this->root, k))->val = v;
+		(this->search (this->root, k))->val = v;
 	} else {
 		if (this->root == this->nil) {
 			this->root = new Node(k, v);
@@ -205,7 +197,7 @@ void Dictionary::setValue(keyType k, valType v) {
 			this->root->left = this->nil;
 			this->root->right = this->nil;
 		} else {
-			Node* N = this->root;
+			Node* N = this -> root;
 			while (true) {
 				if (k < N->key && N->left != this->nil) {
 					N = N->left;
@@ -229,9 +221,9 @@ void Dictionary::setValue(keyType k, valType v) {
 	}
 }
 
-void Dictionary::remove(keyType k){
+void BST::remove(keyType k){
 	if (!(this->contains(k))) {
-		throw out_of_range("Dictionary: remove(): key \"blah\" does not exist");
+		throw out_of_range("Binary Search Tree: remove(): key "+ k +" does not exist");
 	}
 	Node* N = this->search(this->root, k);
 	if (N->left == this->nil && N->right == this->nil) {
@@ -244,7 +236,7 @@ void Dictionary::remove(keyType k){
 		if (N == this->root) {
 			this->root = this->nil;
 		}
-	} else if (N->left == this->nil) {
+	} else if (N->left == this->nil){
 		if ((N->parent)->left == N) {
 			(N->parent)->left = N->right;
 		}
@@ -255,7 +247,7 @@ void Dictionary::remove(keyType k){
 		if (N == this->root) {
 			this->root = N->right;
 		}
-	} else if (N->right == this->nil) {
+	} else if (N->right == this->nil){
 		if ((N->parent)->left == N) {
 			(N->parent)->left = N->left;
 		}
@@ -267,7 +259,7 @@ void Dictionary::remove(keyType k){
 			this->root = N->left;
 		}
 	} else {
-		Node* next = this->findNext(N);
+		Node* next = this -> findNext(N);
 		if ((N->parent)->left == N) {
 			(N->parent)->left = next;
 		}
@@ -296,63 +288,63 @@ void Dictionary::remove(keyType k){
 	this->num_pairs--;
 }
 
-void Dictionary::begin() {
+void BST::begin() {
 	if (this->num_pairs > 0) {
 		this->current = this->findMin(this->root);
 	}
 }
 
-void Dictionary::end() {
+void BST::end() {
 	if (this->num_pairs > 0) {
 		this->current = this->findMax(this->root);
 	}
 }
 
-void Dictionary::next() {
+void BST::next() {
 	if (!(this->hasCurrent())) {
-		throw out_of_range("Dictionary: next(): current undefined");	
+		throw out_of_range("Binary Search Tree: next(): current key is undefined");
 	}
 	this->current = this->findNext(this->current);
 }
 
-void Dictionary::prev() {
+void BST::prev() {
 	if (!(this->hasCurrent())) {
-		throw out_of_range("Dictionary: prev(): current undefined");
+		throw out_of_range("Binary Search Tree: prev(): current key is undefined");
 	}
 	this->current = this->findPrev(this->current);
 }
 
-string Dictionary::to_string() const{
-	string s;
-	this->inOrderString(s, this->root);
+string BST::to_string() const{
+	string s ;
+	this->inOrderString (s, this->root);
 	return(s);
 }
 
-string Dictionary::pre_string() const{
-	string s;
-	this->preOrderString(s, this->root);
+string BST::pre_string() const{
+	string s ;
+	this->preOrderString (s, this->root);
 	return(s);
 }
 
-bool Dictionary::equals(const Dictionary& D) const {
-	return(this->to_string() == D.to_string());
+bool BST::equals(const BST& A) const {
+	return(this->to_string() == A.to_string());
 }
 
-ostream& operator<<( ostream& stream, Dictionary& D){
-	return(stream << D.to_string());
+ostream& operator<<( ostream& stream, BST& A){
+	return(stream << A.to_string());
 }
 
-bool operator==( const Dictionary& A, const Dictionary& B ) {
+bool operator==( const BST& A, const BST& B) {
 	return(A.equals(B));
 }
 
-Dictionary& Dictionary::operator=( const Dictionary& D) {
-	if (this != &D) {
-		Dictionary temp = D;
-		swap(this->nil, temp.nil);
-		swap(this->num_pairs, temp.num_pairs);
-		swap(this->root, temp.root);
-		swap(this->current, temp.current);
+BST& BST::operator=( const BST& A) {
+	if (this != &A) {
+		BST temp = A ;
+		swap (this->nil, temp.nil);
+		swap (this->num_pairs, temp.num_pairs);
+		swap (this->root, temp.root);
+		swap (this->current, temp.current);
 	}
 	return(*this);
 }
