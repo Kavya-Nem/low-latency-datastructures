@@ -1,3 +1,3 @@
-[submodule "cse-101-public-tests"]
-	path = cse-101-public-tests
-	url = https://github.com/Kavya-Nem/cse-101-public-tests.git
+[submodule "low-latency-data-structures-tests"]
+	path = low-latency-data-structures-tests
+	url = https://github.com/Kavya-Nem/low-latency-data-structures-tests.git
