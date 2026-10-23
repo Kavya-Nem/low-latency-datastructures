@@ -1,5 +1,4 @@
 #------------------------------------------------------------------------------
-# Makefile for CSE 101 Programming Assignment 7
 #
 # make                         makes Words
 # make BSTTest                 makes BSTTest
@@ -15,7 +14,7 @@ MAINSRC        = $(MAIN).cpp
 TEST           = BSTTest
 TESTOBJ        = $(TEST).o
 TESTSRC        = $(TEST).cpp
-ADT            = Dictionary
+ADT            = BST
 ADTOBJ         = $(ADT).o
 ADTSRC         = $(ADT).cpp
 ADT_H          = $(ADT).h
