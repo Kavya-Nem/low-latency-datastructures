@@ -1,8 +1,8 @@
 #include<iostream>
 #include<string>
 
-#ifndef DICTIONARY_H_INCLUDE_
-#define DICTIONARY_H_INCLUDE_
+#ifndef BINARYSEARCHTREE_H_INCLUDE
+#define BINARYSEARCHTREE_H_INCLUDE
 
 // Exported types -------------------------------------------------------------
 typedef std::string keyType;  // must be comparable using <, <=, >, >=, ==, !=
