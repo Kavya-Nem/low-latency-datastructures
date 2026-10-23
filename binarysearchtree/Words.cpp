@@ -11,7 +11,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include "Dictionary.h"
+#include "binarysearchtree.h"
 
 using namespace std;
 
