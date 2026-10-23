@@ -1,159 +1,122 @@
 #include<iostream>
 #include<string>
 
-#ifndef BINARYSEARCHTREE_H_INCLUDE
-#define BINARYSEARCHTREE_H_INCLUDE
+# ifndef BINARYSEARCHTREE_H_INCLUDE
+# define BINARYSEARCHTREE_H_INCLUDE
 
 typedef std::string keyType;
 typedef int valType;
 
-class Dictionary{
+class BST {
 
 private:
 
-   // private Node struct
-   struct Node{
-      // Node fields
-      keyType key;
-      valType val;
-      Node* parent;
-      Node* left;
-      Node* right;
-      // Node constructor
-      Node(keyType k, valType v);
+   struct Node {
+      keyType key ;
+      valType val ;
+      Node* parent ;
+      Node* left ;
+      Node* right ;
+      Node (keyType k, valType v);
    };
 
-   // Dictionary fields
-   Node* nil;
-   Node* root;
-   Node* current;
-   int   num_pairs;
+   Node* nil ;
+   Node* root ;
+   Node* current ;
+   int num_pairs ;
 
-   // Helper Functions (Optional) ---------------------------------------------
-
-   // inOrderString()
+   // inOrderString ()
    // Appends a string representation of the tree rooted at R to string s. The
-   // string appended consists of: "key : value \n" for each key-value pair in
-   // tree R, arranged in order by keys.
+   // string appended consists of: "key : value \n" for each key-value pair
+   // in tree R, arranged in order by keys.
    void inOrderString(std::string& s, Node* R) const;
 
-   // preOrderString()
+   // preOrderString ()
    // Appends a string representation of the tree rooted at R to s. The appended
-   // string consists of keys only, separated by "\n", with the order determined
-   // by a pre-order tree walk.
+   // string consists of keys only, separated by "\n", with the order
+   // determined by pre-order tree walk.
    void preOrderString(std::string& s, Node* R) const;
 
-   // preOrderCopy()
-   // Recursively inserts a deep copy of the subtree rooted at R into this 
-   // Dictionary. Recursion terminates at N.
+   // preOrderCopy ()
+   // Recursively inserts a deep copy of the subtree rooted at R 
+   // into this BST. Recursion terminates at Node N.
    void preOrderCopy(Node* R, Node* N);
 
-   // postOrderDelete()
-   // Deletes all Nodes in the subtree rooted at R.
+   // postOrderDelete ()
+   // Deletes all Nodes in the subtree rooted at the Node R.
    void postOrderDelete(Node* R);
 
-   // search()
-   // Searches the subtree rooted at R for a Node with key==k. Returns
-   // the address of the Node if it exists, returns nil otherwise.
+   // search ()
+   // Searches the subtree rooted at R for a Node with key==k.
+   // Returns the address of the Node if it exists, nil otherwise.
    Node* search(Node* R, keyType k) const;
 
-   // findMin()
-   // If the subtree rooted at R is not empty, returns a pointer to the 
+   // findMin ()
+   // If the subtree rooted at R is not empty, returns a pointer to the
    // leftmost Node in that subtree, otherwise returns nil.
    Node* findMin(Node* R);
 
-   // findMax()
-   // If the subtree rooted at R is not empty, returns a pointer to the 
+   // findMax ()
+   // If the subtree rooted at R is not empty, returns a pointer to the
    // rightmost Node in that subtree, otherwise returns nil.
    Node* findMax(Node* R);
 
-   // findNext()
+   // findNext ()
    // If N does not point to the rightmost Node, returns a pointer to the
-   // Node after N in an in-order tree walk.  If N points to the rightmost 
-   // Node, or is nil, returns nil. 
+   // Node after N in an in-order tree walk. If N points to the rightmost
+   // Node, or nil, returns nil.
    Node* findNext(Node* N);
 
-   // findPrev()
+   // findPrev ()
    // If N does not point to the leftmost Node, returns a pointer to the
-   // Node before N in an in-order tree walk.  If N points to the leftmost 
-   // Node, or is nil, returns nil.
+   // Node before N in an in-order tree walk. If N points to the leftmost
+   // Node, or nil, returns nil.
    Node* findPrev(Node* N);
 
 public:
 
-   // Class Constructors & Destructors ----------------------------------------
-   
-   // Creates new Dictionary in the empty state. 
-   Dictionary();
+   BST();
 
-   // Copy constructor.
-   Dictionary(const Dictionary& D);
+   BST(const BST& A);
 
-   // Destructor
-   ~Dictionary();
+   ~BST();
 
-
-   // Access functions --------------------------------------------------------
-
-   // size()
-   // Returns the size of this Dictionary.
    int size() const;
 
-   // contains()
-   // Returns true if there exists a pair such that key==k, and returns false
-   // otherwise.
-   bool contains(keyType k) const;
+   bool contains (keyType k) const;
 
-   // getValue()
-   // Returns a reference to the value corresponding to key k.
+   // Returns a reference to the value corresponding to key k .
    // Pre: contains(k)
-   valType& getValue(keyType k) const;
+   valType& getValue (keyType k) const;
 
-   // hasCurrent()
-   // Returns true if the current iterator is defined, and returns false 
-   // otherwise.
+   // Returns true if the current iterator is defined, and false otherwise.
    bool hasCurrent() const;
 
-   // currentKey()
-   // Returns the current key.
-   // Pre: hasCurrent() 
+   // Pre: hasCurrent()
    keyType currentKey() const;
 
-   // currentVal()
-   // Returns a reference to the current value.
+   // Returns a reference to the current iterator's value.
    // Pre: hasCurrent()
    valType& currentVal() const;
 
-
-   // Manipulation procedures -------------------------------------------------
-
-   // clear()
-   // Resets this Dictionary to the empty state, containing no pairs.
    void clear();
 
-   // setValue()
-   // If a pair with key==k exists, overwrites the corresponding value with v, 
-   // otherwise inserts the new pair (k, v).
+   // If a pair with key==k exists, overwrites the corresponding value with
+   // v, otherwise inserts the new pair (k, v).
    void setValue(keyType k, valType v);
 
-   // remove()
-   // Deletes the pair for which key==k. If that pair is current, then current
-   // becomes undefined.
    // Pre: contains(k).
    void remove(keyType k);
 
-   // begin()
    // If non-empty, places current iterator at the first (key, value) pair
-   // (as defined by the order operator < on keys), otherwise does nothing. 
-   void begin();
+   // (as defined by the order operator < on keys), otherwise nothing.
+   void begin ();
 
-   // end()
    // If non-empty, places current iterator at the last (key, value) pair
-   // (as defined by the order operator < on keys), otherwise does nothing. 
-   void end();
+   // (as defined by the order operator < on keys), otherwise nothing.
+   void end ();
 
-   // next()
-   // If the current iterator is not at the last pair, advances current 
+   // If the current iterator is not at the last pair, advances current
    // to the next pair (as defined by the order operator < on keys). If 
    // the current iterator is at the last pair, makes current undefined.
    // Pre: hasCurrent()
