@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cassert>
 #include <stdexcept>
-#include "Dictionary.h"
+#include "binarysearchtree.h"
 
 using namespace std;
 
