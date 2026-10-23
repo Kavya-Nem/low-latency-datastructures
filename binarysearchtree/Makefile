@@ -17,7 +17,7 @@ TESTSRC        = $(TEST).cpp
 ADT            = BST
 ADTOBJ         = $(ADT).o
 ADTSRC         = $(ADT).cpp
-ADT_H          = $(ADT).h
+ADT_H          = binarysearchtree.h
 COMPILE        = g++ -std=c++17 -Wall -c
 LINK           = g++ -std=c++17 -Wall -o
 REMOVE         = rm -f
