@@ -4,9 +4,8 @@
 #ifndef BINARYSEARCHTREE_H_INCLUDE
 #define BINARYSEARCHTREE_H_INCLUDE
 
-// Exported types -------------------------------------------------------------
-typedef std::string keyType;  // must be comparable using <, <=, >, >=, ==, !=
-typedef int         valType;
+typedef std::string keyType;
+typedef int valType;
 
 class Dictionary{
 
