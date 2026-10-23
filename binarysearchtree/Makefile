@@ -2,17 +2,17 @@
 # Makefile for CSE 101 Programming Assignment 7
 #
 # make                         makes Words
-# make DictionaryTest          makes DictionaryTest
+# make BSTTest                 makes BSTTest
 # make clean                   removes all binaries
 # make checkWords              runs Words in3 myout3 under valgrind
-# make checkDictionaryTest     runs DictionaryTest under valgrind
+# make checkBSTTest            runs BSTTest under valgrind
 #
 #------------------------------------------------------------------------------
 
 MAIN           = Words
 MAINOBJ        = $(MAIN).o
 MAINSRC        = $(MAIN).cpp
-TEST           = DictionaryTest
+TEST           = BSTTest
 TESTOBJ        = $(TEST).o
 TESTSRC        = $(TEST).cpp
 ADT            = Dictionary
